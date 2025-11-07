@@ -1,10 +1,9 @@
-<!DOCTYPE html>
+html<!DOCTYPE html>
 <html lang="sk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swiss Airlines - Registrácia a Lietadlá</title>
-    <!-- Swiss Style: Červená #E31C2B, Biela #FFFFFF, Tmavošedá #333333 -->
+    <title>Swiss Airlines - Flotila</title>
     <style>
         :root {
             --swiss-red: #E31C2B;
@@ -12,279 +11,148 @@
             --swiss-dark: #333333;
             --swiss-gray: #f4f4f4;
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: var(--swiss-gray); color: var(--swiss-dark); line-height: 1.6; }
+        .container { max-width: 900px; margin: 40px auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 8px solid var(--swiss-red); }
+        header { text-align: center; padding-bottom: 20px; border-bottom: 2px solid var(--swiss-red); margin-bottom: 30px; }
+        header h1 { color: var(--swiss-red); font-size: 2.2rem; font-weight: bold; }
+        header p { font-size: 1.1rem; margin-top: 8px; }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
+        .register-form, .dashboard { display: none; }
+        .register-form.active, .dashboard.active { display: block; }
 
-        body {
-            background-color: var(--swiss-gray);
-            color: var(--swiss-dark);
-            line-height: 1.6;
-        }
+        form { display: grid; gap: 15px; }
+        input { padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; width: 100%; }
+        input:focus { border-color: var(--swiss-red); outline: none; }
+        button { background: var(--swiss-red); color: white; padding: 12px 20px; border: none; border-radius: 6px; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #c41a28; }
 
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-            background: var(--swiss-white);
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-top: 8px solid var(--swiss-red);
-        }
+        .aircraft-list { list-style: none; margin-top: 20px; }
+        .aircraft-item { background: white; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; overflow: hidden; cursor: pointer; transition: 0.2s; }
+        .aircraft-item:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
+        .aircraft-header { background: var(--swiss-red); color: white; padding: 15px; font-weight: bold; font-size: 1.2rem; }
+        .aircraft-details { padding: 20px; display: none; }
+        .aircraft-details.active { display: block; }
+        .aircraft-details img { width: 100%; max-width: 600px; border-radius: 8px; margin-top: 15px; display: block; }
 
-        header {
-            text-align: center;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--swiss-red);
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            color: var(--swiss-red);
-            font-size: 2.2rem;
-            font-weight: bold;
-        }
-
-        header p {
-            color: var(--swiss-dark);
-            font-size: 1.1rem;
-            margin-top: 8px;
-        }
-
-        /* Registrácia */
-        .register-form {
-            display: block;
-        }
-
-        .dashboard {
-            display: none;
-        }
-
-        form {
-            display: grid;
-            gap: 15px;
-        }
-
-        label {
-            font-weight: bold;
-            color: var(--swiss-dark);
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="password"] {
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 1rem;
-            width: 100%;
-            transition: border 0.3s;
-        }
-
-        input:focus {
-            border-color: var(--swiss-red);
-            outline: none;
-        }
-
-        button {
-            background-color: var(--swiss-red);
-            color: var(--swiss-white);
-            padding: 12px 20px;
-            border: none;
-            border-radius: 6px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background-color: #c41a28;
-        }
-
-        /* Dashboard */
-        .aircraft-list {
-            list-style: none;
-            margin-top: 20px;
-        }
-
-        .aircraft-item {
-            background: var(--swiss-white);
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-        }
-
-        .aircraft-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-        }
-
-        .aircraft-header {
-            background: var(--swiss-red);
-            color: white;
-            padding: 15px;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .aircraft-details {
-            padding: 20px;
-            display: none;
-        }
-
-        .aircraft-details img {
-            width: 100%;
-            max-width: 600px;
-            border-radius: 8px;
-            margin-top: 15px;
-            display: block;
-        }
-
-        .logout {
-            background: var(--swiss-dark);
-            margin-top: 30px;
-            display: inline-block;
-        }
-
-        .logout:hover {
-            background: #222;
-        }
+        .logout { background: var(--swiss-dark); color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-top: 30px; }
+        .logout:hover { background: #222; }
 
         @media (max-width: 600px) {
-            .container {
-                margin: 20px;
-                padding: 15px;
-            }
-            header h1 {
-                font-size: 1.8rem;
-            }
+            .container { margin: 20px; padding: 15px; }
+            header h1 { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
 
-<div class="container" id="app">
+<div class="container">
     <!-- Registrácia -->
-    <div class="register-form" id="registerSection">
+    <div id="registerSection" class="register-form active">
         <header>
             <h1>Swiss Airlines</h1>
-            <p>Vitajte v systéme. Pre prístup k lietadlám sa prosím zaregistrujte.</p>
+            <p>Zaregistrujte sa pre prístup k flotile.</p>
         </header>
-
         <form id="registerForm">
             <label for="username">Používateľské meno:</label>
             <input type="text" id="username" required placeholder="Zadajte meno">
-
             <label for="email">E-mail:</label>
             <input type="email" id="email" required placeholder="example@swiss.com">
-
             <label for="password">Heslo:</label>
-            <input type="password" id="password" required placeholder="Minimálne 6 znakov">
-
+            <input type="password" id="password" required placeholder="Min. 6 znakov" minlength="6">
             <button type="submit">Zaregistrovať sa</button>
         </form>
     </div>
 
-    <!-- Dashboard po registrácii -->
-    <div class="dashboard" id="dashboardSection">
+    <!-- Dashboard -->
+    <div id="dashboardSection" class="dashboard">
         <header>
             <h1>Swiss Airlines – Flotila</h1>
-            <p>Vitajte, <span id="welcomeUser"></span>! Vyberte lietadlo nižšie.</p>
+            <p>Vitajte, <span id="welcomeUser"></span>!</p>
         </header>
 
-        <ul class="aircraft-list">
-            <li class="aircraft-item">
-                <div class="aircraft-header" onclick="toggleDetails('a330')">
-                    Airbus A330-900
-                </div>
+        <div class="aircraft-list">
+            <!-- A330-300 -->
+            <div class="aircraft-item">
+                <div class="aircraft-header" onclick="toggle('a330')">Airbus A330-300</div>
                 <div class="aircraft-details" id="a330">
-                    <p>Airbus A330 je širokotrupý dvoumotorový proudový dopravní letoun pro střední a dlouhé tratě vyráběný společností Airbus. V polovině sedmdesátých let vzniklo ve společnosti Airbus několik derivátů jejího prvního dopravního letounu Airbus A300 a paralelně s čtyřmotorovým typem A340 vznikl dvoumotorový A330. </p>
-                    <img src="images/a330.jpg" alt="Airbus a330-900 Swiss">
+                    <p>Širokotrupé lietadlo na dlhé trate – Ázia, Amerika. Pohodlné a spoľahlivé.</p>
+                    <img src="images/a330.jpg" alt="Swiss A330-300">
                 </div>
-            </li>
+            </div>
 
-            <li class="aircraft-item">
-    <div class="aircraft-header" onclick="toggleDetails('a359')">
-        Airbus A359
-    </div>
-    <div class="aircraft-details" id="a359">
-        <p>Airbus A350 XWB  je dvoumotorový proudový širokotrupý dálkový dopravní letoun vyráběný společností Airbus.</p>
-        <img src="images/a359.jpg" alt="Airbus A359">
-    </div>
-</li>
-
-            <li class="aircraft-item">
-                <div class="aircraft-header" onclick="toggleDetails('a320ceo')">
-                    Airbus A320ceo
+            <!-- A350-900 (A359) -->
+            <div class="aircraft-item">
+                <div class="aircraft-header" onclick="toggle('a359')">Airbus A350-900</div>
+                <div class="aircraft-details" id="a359">
+                    <p>Moderné dálkové lietadlo s najnovšími technológiami. Tichšie, úspornejšie, pohodlnejšie.</p>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Swiss_A350-900_HB-JBA.jpg" alt="Swiss A350-900">
                 </div>
+            </div>
+
+            <!-- A320ceo -->
+            <div class="aircraft-item">
+                <div class="aircraft-header" onclick="toggle('a320ceo')">Airbus A320ceo</div>
                 <div class="aircraft-details" id="a320ceo">
-                    <p>Klasická verzia A320 s osvedčenou spoľahlivosťou. Používaná na európske linky.</p>
-                    <img src="images/a320neo.jpg" alt="Airbus A320neo Swiss">
+                    <p>Klasická verzia A320 s osvedčenou spoľahlivosťou. Ideálna na európske linky.</p>
+                    <img src="images/a320neo.jpg" alt="Swiss A320ceo">
                 </div>
-            </li>
-        </ul>
+            </div>
+        </div>
 
         <button class="logout" onclick="logout()">Odhlásiť sa</button>
     </div>
 </div>
 
 <script>
+    // Zobrazenie sekcií
+    function show(section) {
+        document.querySelectorAll('.register-form, .dashboard').forEach(s => s.classList.remove('active'));
+        document.getElementById(section).classList.add('active');
+    }
+
+    // Rozklikávanie lietadiel
+    function toggle(id) {
+        const el = document.getElementById(id);
+        // Skry všetky ostatné
+        document.querySelectorAll('.aircraft-details').forEach(d => {
+            if (d.id !== id) d.classList.remove('active');
+        });
+        // Toggle vybrané
+        el.classList.toggle('active');
+    }
+
     // Registrácia
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
+    document.getElementById('registerForm').onsubmit = function(e) {
         e.preventDefault();
-
-        const username = document.getElementById('username').value;
-        const email = document.getElementById('email').value;
+        const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
-
-        if (username && email && password.length >= 6) {
-            // Uložíme do localStorage (simulácia prihlásenia)
-            localStorage.setItem('user', JSON.stringify({ username, email }));
-
-            // Prepneme na dashboard
-            document.getElementById('registerSection').style.display = 'none';
-            document.getElementById('dashboardSection').style.display = 'block';
+        if (username && password.length >= 6) {
+            localStorage.setItem('swiss_user', username);
             document.getElementById('welcomeUser').textContent = username;
+            show('dashboardSection');
         } else {
-            alert('Prosím vyplňte všetky polia. Heslo musí mať aspoň 6 znakov.');
-        }
-    });
-
-    // Kontrola, či je už používateľ prihlásený
-    window.onload = function() {
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (user) {
-            document.getElementById('registerSection').style.display = 'none';
-            document.getElementById('dashboardSection').style.display = 'block';
-            document.getElementById('welcomeUser').textContent = user.username;
+            alert('Vyplňte meno a heslo (min. 6 znakov).');
         }
     };
 
-    // Rozkliknutie detailov lietadla
-    function toggleDetails(id) {
-        const details = document.getElementById(id);
-        const isVisible = details.style.display === 'block';
-        // Najprv skryjeme všetky
-        document.querySelectorAll('.aircraft-details').forEach(d => d.style.display = 'none');
-        // Potom zobrazíme vybrané
-        details.style.display = isVisible ? 'none' : 'block';
-    }
-
     // Odhlásenie
     function logout() {
-        localStorage.removeItem('user');
-        document.getElementById('registerSection').style.display = 'block';
-        document.getElementById('dashboardSection').style.display = 'none';
+        localStorage.removeItem('swiss_user');
         document.getElementById('registerForm').reset();
+        show('registerSection');
     }
+
+    // Načítanie pri otvorení
+    window.onload = function() {
+        const user = localStorage.getItem('swiss_user');
+        if (user) {
+            document.getElementById('welcomeUser').textContent = user;
+            show('dashboardSection');
+        } else {
+            show('registerSection');
+        }
+    };
 </script>
 
 </body>
